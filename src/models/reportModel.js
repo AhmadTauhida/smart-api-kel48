@@ -1,0 +1,15 @@
+import { pool } from '../config/db.js';
+
+export const ReportModel = {
+  async getStats() {
+    const query = `
+      SELECT 
+        (SELECT COUNT(*) FROM books) as total_books,
+        (SELECT COUNT(*) FROM authors) as total_authors,
+        (SELECT COUNT(*) FROM categories) as total_categories,
+        (SELECT COUNT(*) FROM loans WHERE status = 'BORROWED') as total_borrowed;
+    `;
+    const result = await pool.query(query);
+    return result.rows[0];
+  }
+};

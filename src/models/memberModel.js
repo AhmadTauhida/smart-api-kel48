@@ -14,5 +14,29 @@ export const MemberModel = {
     `;
     const result = await pool.query(query, [full_name, email, member_type]);
     return result.rows[0];
+  },
+  
+  async delete(id) {
+    const result = await pool.query('DELETE FROM members WHERE id = $1', [id]);
+    if (result.rowCount === 0) throw new Error("Member tidak ditemukan"); // Cek apakah ada baris yang dihapus
+    return { message: "Member berhasil dihapus dari sistem." };
+  },
+  async update(id, data) { 
+    const oldDataResult = await pool.query('SELECT * FROM members WHERE id = $1', [id]);
+    if (oldDataResult.rows.length === 0) throw new Error("Member tidak ditemukan");
+    const oldData = oldDataResult.rows[0];
+
+    const full_name = data.full_name || oldData.full_name;
+    const email = data.email || oldData.email;
+    const member_type = data.member_type || oldData.member_type;
+
+    const query = `
+      UPDATE members 
+      SET full_name = $1, email = $2, member_type = $3 
+      WHERE id = $4 RETURNING *
+    `;
+    const result = await pool.query(query, [full_name, email, member_type, id]);
+    return result.rows[0];
   }
+
 };

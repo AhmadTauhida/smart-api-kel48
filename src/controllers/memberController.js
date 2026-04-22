@@ -22,5 +22,25 @@ export const MemberController = {
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
+  },
+  // Menghapus anggota berdasarkan ID
+  async deleteMember(req, res) {
+    try {
+      const { id } = req.params;
+      const result = await MemberModel.delete(id);
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+  // Memperbarui informasi anggota berdasarkan ID
+  async updateMember(req, res) {
+    try {
+      const { id } = req.params; 
+      const updatedMember = await MemberModel.update(id, req.body);  
+      res.json(updatedMember);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
   }
 };

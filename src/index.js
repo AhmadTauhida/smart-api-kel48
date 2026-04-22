@@ -5,6 +5,8 @@ import loanRoutes from './routes/loanRoutes.js';
 import memberRoutes from './routes/memberRoutes.js'; 
 import authorRoutes from './routes/authorRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import topBooksRoutes from './routes/topBooksRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 
 dotenv.config();
 
@@ -17,6 +19,12 @@ app.use('/api/loans', loanRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/authors', authorRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/reports', reportRoutes);
+
+// Diubah dari /api/topBooks menjadi /api/reports
+// Dengan asumsi di dalam topBooksRoutes.js routenya adalah '/' 
+// maka aksesnya nanti menjadi /api/reports/top-books
+app.use('/api/reports', topBooksRoutes);
 
 app.get('/', (req, res) => res.send('Smart Library API is Running...'));
 
