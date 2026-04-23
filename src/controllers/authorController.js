@@ -3,8 +3,9 @@ import { AuthorModel } from '../models/authorModel.js';
 export const AuthorController = {
   async getAuthors(req, res) {
     try {
-      const author = req.query.author || '';
-      const authors = await AuthorModel.getAll(author);
+      console.log("Parameter yang diterima:", req.query.name);
+      const name = req.query.author || '';
+      const authors = await AuthorModel.getAll(name);
       res.json(authors);
     } 
 catch (err) {
