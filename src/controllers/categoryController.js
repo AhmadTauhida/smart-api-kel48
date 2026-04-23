@@ -3,8 +3,8 @@ import { CategoryModel } from '../models/categoryModel.js';
 export const CategoryController = {
   async getCategories(req, res) {
     try {
-      const category = req.query.category || '';
-      const categories = await CategoryModel.getAll(category);
+      const name = req.query.name || '';
+      const categories = await CategoryModel.getAll(name);
       res.json(categories);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -29,13 +29,17 @@ export const CategoryController = {
     }
   },
   async deleteCategory(req, res) {
-  try {
-    const { id } = req.params;
-    const result = await CategoryModel.delete(id); 
-    res.json(result); 
-  }
-     catch (err) {
-      res.status(400).json({ error: err.message });
+    try {
+      const { id } = req.params;
+      const result = await CategoryModel.delete(id); 
+      res.json(result); 
+    } catch (err) {
+      
+      if (err.message === "Kategori tidak ditemukan.") {
+        res.status(404).json({ error: err.message });
+      } else {
+        res.status(400).json({ error: err.message });
+      }
     }
   }
 };

@@ -4,7 +4,7 @@ export const AuthorController = {
   async getAuthors(req, res) {
     try {
       console.log("Parameter yang diterima:", req.query.name);
-      const name = req.query.author || '';
+      const name = req.query.name || '';
       const authors = await AuthorModel.getAll(name);
       res.json(authors);
     } 

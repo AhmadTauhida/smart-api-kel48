@@ -5,7 +5,14 @@ export const LoanController = {
     try {
       const loan = await LoanModel.createLoan(req.body.book_id, req.body.member_id, req.body.due_date);
       res.status(201).json({ message: "Peminjaman dicatat!", data: loan });
-    } catch (err) { res.status(400).json({ error: err.message }); }
+    } catch (err) { 
+      // Menangkap error jika ID Book atau ID Member tidak ada di database
+      if (err.code === '23503') {
+        res.status(400).json({ error: "Gagal mencatat peminjaman. Pastikan ID Buku dan ID Member valid atau terdaftar di sistem." });
+      } else {
+        res.status(400).json({ error: err.message }); 
+      }
+    }
   },
 
   async getLoans(req, res) {
@@ -24,7 +31,14 @@ export const LoanController = {
     try {
       const updated = await LoanModel.updateLoan(req.params.id, req.body.book_id, req.body.member_id, req.body.due_date);
       res.json(updated);
-    } catch (err) { res.status(400).json({ error: err.message }); }
+    } catch (err) { 
+      // Menangkap error yang sama untuk fungsi update
+      if (err.code === '23503') {
+        res.status(400).json({ error: "Gagal memperbarui peminjaman. Pastikan ID Buku dan ID Member valid." });
+      } else {
+        res.status(400).json({ error: err.message }); 
+      }
+    }
   },
 
   async deleteLoan(req, res) {

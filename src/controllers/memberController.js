@@ -23,14 +23,19 @@ export const MemberController = {
       res.status(400).json({ error: err.message });
     }
   },
-  // Menghapus anggota berdasarkan ID
+  
   async deleteMember(req, res) {
     try {
       const { id } = req.params;
-      const result = await MemberModel.delete(id);
-      res.json(result);
+      const result = await MemberModel.delete(id); 
+      res.json(result); 
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      // 23503 adalah kode error PostgreSQL untuk Foreign Key Constraint Violation
+      if (err.code === '23503') { 
+        res.status(400).json({ error: "Gagal menghapus! Member ini tidak bisa dihapus karena masih memiliki riwayat peminjaman buku." });
+      } else {
+        res.status(500).json({ error: err.message });
+      }
     }
   },
   // Memperbarui informasi anggota berdasarkan ID

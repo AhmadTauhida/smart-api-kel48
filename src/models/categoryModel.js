@@ -27,7 +27,13 @@ export const CategoryModel = {
   },
   async delete(id) {
     const query = 'DELETE FROM categories WHERE id = $1';
-    await pool.query(query, [id]);
+    const result = await pool.query(query, [id]);
+    
+    
+    if (result.rowCount === 0) {
+      throw new Error("Kategori tidak ditemukan.");
+    }
+    
     return { message: "Kategori berhasil dihapus." };
   }
 };

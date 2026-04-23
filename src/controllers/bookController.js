@@ -26,7 +26,17 @@ export const BookController = {
       const result = await BookModel.delete(id);
       res.json(result);
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      // Menangkap error foreign key constraint PostgreSQL (kode: 23503)
+      if (err.code === '23503') {
+        res.status(400).json({ 
+          error: "Buku tidak bisa dihapus karena masih ada dalam data transaksi peminjaman (masih dipinjam atau pernah dipinjam)." 
+        });
+      } else if (err.message === "Buku tidak ditemukan.") {
+        // Asumsi kamu juga menerapkan pengecekan rowCount di Model seperti sebelumnya
+        res.status(404).json({ error: err.message });
+      } else {
+        res.status(400).json({ error: err.message });
+      }
     }
   },
   async updateBook(req, res) {
